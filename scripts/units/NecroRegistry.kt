@@ -44,10 +44,10 @@ object NecroRegistry {
         Events.run(EventType.Trigger.update, object : Runnable {
             var once = false
             override fun run() {
-                if (!once && Vars.content.units().any()) {
-                    once = true
-                    scan()
-                }
+            if (!once && Vars.content.units().size > 0) {
+                once = true
+                scan()
+            }
                 cleanProtection()
                 tickFunctions()
             }

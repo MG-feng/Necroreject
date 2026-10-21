@@ -55,6 +55,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 tasks.withType<JavaCompile>().configureEach {
     sourceCompatibility = "1.8"
     targetCompatibility = "1.8"
+    options.encoding = "UTF-8"
 }
 
 val jarAndroid = tasks.register("jarAndroid") {
