@@ -1,0 +1,9 @@
+name: "necroreject"
+displayName: "Necroreject"
+author: "Moonano-MGFeng"
+description: "Fungal corruption spreads through the battlefield."
+version: "0.1.0-dev"
+minGameVersion: "160"
+hidden: false
+main: "com.manona.industry.Necroreject"
+java: true
