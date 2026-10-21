@@ -2,9 +2,9 @@ name: Build Mod
 
 on:
   push:
-    branches: [ main, arena/a8432e17-necroreject ]
+    branches: [ main, v0.1.0-dev, arena/a8432e17-necroreject, arena/56a8f721-necroreject ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, v0.1.0-dev ]
   workflow_dispatch:
 
 jobs:
