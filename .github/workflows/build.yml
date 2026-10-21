@@ -29,10 +29,10 @@ jobs:
           set +e
           gradle jar --stacktrace --no-daemon --console=plain 2>&1 | tee build.log
           RC=${PIPESTATUS[0]}
-          echo "### Build log (last 300 lines)" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          tail -n 300 build.log >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          # Emit lines with e: / error: as GitHub annotations
+          grep -E '^e: |^error: |^\* Exception|FAILURE:|BUILD ' build.log | while IFS= read -r line; do
+            echo "::error::$line"
+          done
           exit $RC
 
       - name: List build outputs
