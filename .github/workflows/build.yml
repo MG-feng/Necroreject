@@ -22,24 +22,24 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.10.2
+          gradle-version: 8.5
+
+      - name: Gradle version and environment
+        run: |
+          gradle --version
+          java -version
+          echo "PWD=$PWD"
+          ls -la
 
       - name: Build jar (desktop)
-        id: build
         run: |
           set +e
-          gradle jar --stacktrace --no-daemon > build.log 2>&1
-          echo "exit=$?" >> build.log
-          tail -n +1 build.log
-          exit $(grep -oE 'exit=[0-9]+' build.log | tail -1 | cut -d= -f2)
-
-      - name: Upload build log always
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build.log
-          if-no-files-found: ignore
+          gradle jar --stacktrace --no-daemon --console=plain > build.log 2>&1
+          RC=$?
+          echo "==== Build exited with $RC. Last 400 lines of build.log: ===="
+          tail -n 400 build.log
+          echo "==== End of log ===="
+          exit $RC
 
       - name: List build outputs
         if: always()
@@ -51,9 +51,3 @@ jobs:
         with:
           name: necroreject-desktop
           path: build/libs/necrorejectDesktop.jar
-
-      - name: Create release (tagged pushes)
-        if: success() && startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: build/libs/necrorejectDesktop.jar
