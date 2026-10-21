@@ -2,45 +2,30 @@
 
 > Fungal corruption spreads through the battlefield.
 
-A Mindustry v160.7 mod written in Kotlin. Adds a faction of fungal/necrotic mech and leg units that spread corrosive puddles and auras across the map.
+Mindustry v160.7 mod by **Moonano-MGFeng**, written in Kotlin.
 
-## Units
+## Branches
 
-| Name (EN) | Name (CN) | Role |
-|-----------|-----------|------|
-| Necroflux | 液烂 | Light mech – spits phlegm and leaves puddles |
-| Corrocrust | 蚀痂 | Support mech – fungal aura heals allies / corrodes enemies |
-| Ruptgout | 崩疽 | Heavy quadruped – lobs arc phlegm shells, bursts on death |
-| Skysunder | 溃穹 | Artillery octopod – massive long-range phlegm shells, spawns Necrofluxes |
-| Rendcrown | 裂冕 | Epic-tier crawler – corrosion field, pustules, mass death spawns |
+| Branch | Purpose |
+|--------|---------|
+| [`v0.1.0-dev`](../../tree/v0.1.0-dev) | Active development — full Kotlin source, content, bundles, Gradle build, CI. Build artifacts here. |
+| `main` | License + README only (no mod source). Do not merge code into `main`. |
 
-## Status effects
+## Download
 
-- **Fungal Corrosion (菌蚀)** – DoT + slow applied by puddles, auras and phlegm hits.
-- **Rooted (扎根)** – short immobilization after being hit by Skysunder shells.
+Pre-built `necrorejectDesktop.jar` is attached to each successful run of the
+**Build Mod** workflow on the `v0.1.0-dev` branch (see the Actions tab). Drop the
+jar into Mindustry's `mods/` folder.
 
-## Building
+## Building locally (on `v0.1.0-dev`)
 
 Requires JDK 17+.
 
 ```sh
-./gradlew jar          # builds build/libs/necrorejectDesktop.jar (desktop mod jar)
-./gradlew deploy       # builds combined Desktop + Android jar (requires Android SDK)
+./gradlew jar          # build/libs/necrorejectDesktop.jar (desktop mod jar)
+./gradlew deploy       # combined Desktop + Android jar (requires ANDROID_HOME)
 ```
 
-Drop the resulting jar into your Mindustry `mods/` folder.
+## License
 
-## Project layout
-
-```
-scripts/                  Kotlin sources (main plugin, systems, bullets, registry)
-  necroreject.kt          Mod entry point
-  NecroBootstrap.kt       Installs systems in the correct order
-  systems/                PuddleSystem, CorrosionSystem, NecroUtil, NecroFx
-  bullet/                 Custom BulletTypes (PhlegmBullet, ArcPhlegm, AuraBullet, ...)
-  units/                  NecroRegistry – unit scanning, aura/pustule ticking, spawns
-content/units/            HJSON unit definitions
-bundles/                  Localization (en, zh-CN, zh-TW)
-sprites/                 Unit and effect sprites (to be added)
-sounds/                  Custom sounds (to be added)
-```
+GNU AGPLv3 — see [LICENSE](LICENSE).
