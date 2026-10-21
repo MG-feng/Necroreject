@@ -2,15 +2,16 @@ name: corrocrust
 type: mech
 health: 1200
 armor: 55
-speed: 0.75
+speed: 0.7
 rotateSpeed: 3
 hitSize: 18
-range: 100
+range: 90
 targetGround: false
 targetAir: false
 weapons: [
     {
         name: corro-secretion
+        description: @bullet.necroreject-corro-secretion.description
         x: 0
         y: -4
         top: true
@@ -18,15 +19,16 @@ weapons: [
         mirror: false
         controllable: false
         autoTarget: false
-        reload: 20
+        reload: 25
         bullet: {
             type: com.manona.industry.SecretionBullet
-            puddleRadius: 16
-            puddleCount: 3
+            puddleRadius: 13
+            puddleCount: 2
         }
     }
     {
         name: corro-aura
+        description: @bullet.necroreject-corro-aura.description
         x: 0
         y: 0
         top: true
@@ -37,10 +39,10 @@ weapons: [
         reload: 20
         bullet: {
             type: com.manona.industry.AuraBullet
-            auraRadius: 90
-            auraDamage: 36
-            auraHeal: 18
-            auraCorrosionSeconds: 2.5
+            auraRadius: 60
+            auraDamage: 20
+            auraHeal: 12
+            auraCorrosionSeconds: 2
         }
     }
 ]

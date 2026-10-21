@@ -12,7 +12,9 @@ import mindustry.entities.bullet.ArtilleryBulletType
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.gen.Bullet
 import mindustry.gen.Unit as GameUnit
+import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
+import mindustry.graphics.Trail
 import kotlin.math.max
 import kotlin.math.min
 
@@ -24,20 +26,27 @@ interface FunctionBullet : NecroBullet {
 
 private val tmpColor = Color()
 
-private fun drawPhlegm(b: Bullet, visualRadius: Float, arcHeight: Float) {
+/**
+ * Draws a phlegm blob. For arc shots [by] is lifted above ground and a ground
+ * shadow is drawn at (b.x, b.y) whose size/alpha scales with the fraction of
+ * arc height remaining, so the shell looks like it actually travels in an arc
+ * instead of floating above a sliding ground trail.
+ */
+private fun drawPhlegm(b: Bullet, visualRadius: Float, by: Float, heightFrac: Float) {
     val fin = b.fin()
-    val lift = if (arcHeight > 0f) Mathf.sinDeg(fin * 180f) * arcHeight else 0f
     val pulse = 1f + Mathf.sinDeg(Time.time * 9f + b.id * 37f) * 0.1f
-    val r = (visualRadius * pulse * (1f + 0.25f * Mathf.sinDeg(fin * 180f))).coerceAtLeast(1f)
-    val by = b.y + lift
+    val grow = 1f + 0.25f * Mathf.sinDeg(fin * 180f)
+    val r = (visualRadius * pulse * grow).coerceAtLeast(1f)
 
+    // Ground shadow: smaller + fainter the higher the shell is.
+    val shadowScale = 0.6f + 0.4f * (1f - heightFrac)
+    val shadowAlpha = 0.18f + 0.22f * (1f - heightFrac)
+    Draw.z(Layer.debris)
+    Draw.color(Color.black, shadowAlpha)
+    Fill.circle(b.x, b.y, r * 0.8f * shadowScale)
+
+    // Main blob body, drawn at bullet layer at the lifted Y.
     Draw.z(Layer.bullet)
-
-    if (lift > 0f) {
-        Draw.color(Color.black, 0.25f)
-        Fill.circle(b.x, b.y, r * 0.8f)
-    }
-
     Draw.color(NecroFx.BRIGHT, 0.22f)
     Fill.circle(b.x, by, r * 1.7f)
 
@@ -57,6 +66,16 @@ private fun drawPhlegm(b: Bullet, visualRadius: Float, arcHeight: Float) {
     Fill.circle(b.x - r * 0.3f, by + r * 0.3f, r * 0.18f)
 
     Draw.reset()
+}
+
+private fun arcY(b: Bullet, arcHeight: Float): Float {
+    if (arcHeight <= 0f) return b.y
+    return b.y + Mathf.sinDeg(b.fin() * 180f) * arcHeight
+}
+
+private fun heightFrac(b: Bullet, arcHeight: Float): Float {
+    if (arcHeight <= 0f) return 0f
+    return Mathf.sinDeg(b.fin() * 180f)
 }
 
 private fun phlegmImpact(
@@ -81,6 +100,10 @@ private fun phlegmImpact(
     }
 }
 
+/**
+ * Base for straight-travel phlegm shots (Necroflux).
+ * Draws the body at bullet Y (no lift) and a small soft puddle shadow beneath.
+ */
 open class PhlegmBullet : BasicBulletType(), NecroBullet {
     @JvmField var visualRadius = 6f
     @JvmField var puddleRadius = 10f
@@ -95,11 +118,13 @@ open class PhlegmBullet : BasicBulletType(), NecroBullet {
         collidesAir = false; collidesGround = true; hittable = true
         despawnHit = false
         trailColor = NecroFx.BRIGHT; lightColor = NecroFx.BRIGHT
+        drawSize = 200f
     }
 
     override fun draw(b: Bullet) {
-        drawTrail(b)
-        drawPhlegm(b, visualRadius, 0f)
+        // Trail stays flat with the ground blob; body is drawn directly on top.
+        super.draw(b)
+        drawPhlegm(b, visualRadius, b.y, 0f)
     }
 
     override fun hit(b: Bullet, x: Float, y: Float) {
@@ -108,7 +133,6 @@ open class PhlegmBullet : BasicBulletType(), NecroBullet {
     }
 
     override fun despawned(b: Bullet) {
-        // Prevent double-firing when the bullet reaches its lifetime on the ground.
         if (b.absorbed) {
             super.despawned(b)
             return
@@ -118,6 +142,19 @@ open class PhlegmBullet : BasicBulletType(), NecroBullet {
     }
 }
 
+/**
+ * Arcing phlegm artillery (Ruptgout / Skysunder).
+ *
+ * The bullet moves in a straight line along the ground (its X/Y follow the
+ * artillery trajectory that Arc already simulates via vertical velocity), but
+ * because Arc's artillery bullet rendering doesn't draw an arc for a
+ * homogenous blob, we manually:
+ *  - keep an independent Trail in the bullet's data that records the *lifted*
+ *    body position each frame, so the green trail follows the shell, not the
+ *    ground;
+ *  - draw a shrinking ground shadow so the eye reads the blob as climbing and
+ *    falling instead of sliding.
+ */
 open class ArcPhlegm : ArtilleryBulletType(), NecroBullet {
     @JvmField var visualRadius = 9f
     @JvmField var arcHeight = 24f
@@ -135,12 +172,44 @@ open class ArcPhlegm : ArtilleryBulletType(), NecroBullet {
         despawnHit = false
         chargeEffect = NecroFx.charge
         trailColor = NecroFx.BRIGHT; lightColor = NecroFx.BRIGHT
+        // Don't let the parent draw a ground trail for us; we manage our own arc trail.
+        trailLength = 0
+        trailWidth = 0f
+        drawSize = 400f
+    }
+
+    /** Lazy-init an arc-following Trail on the bullet. */
+    private fun trail(b: Bullet): Trail {
+        var t = b.data as? Trail
+        if (t == null) {
+            t = Trail(18)
+            b.data = t
+        }
+        return t
+    }
+
+    override fun update(b: Bullet) {
+        super.update(b)
+        val by = arcY(b, arcHeight)
+        trail(b).update(b.x, by)
     }
 
     override fun draw(b: Bullet) {
-        drawTrail(b)
-        drawPhlegm(b, visualRadius, arcHeight)
+        val by = arcY(b, arcHeight)
+        val hf = heightFrac(b, arcHeight)
+        val f = b.fout()
+        val tw = trailWidthCore() * f
+
+        // Draw the trail in the lifted arc space so it follows the shell
+        // rather than sliding along the ground.
+        Draw.color(trailColor, f)
+        trail(b).drawCap(trailColor, tw)
+
+        drawPhlegm(b, visualRadius, by, hf)
+        Draw.reset()
     }
+
+    private fun trailWidthCore(): Float = max(2f, visualRadius * 0.55f)
 
     override fun hit(b: Bullet, x: Float, y: Float) {
         super.hit(b, x, y)
@@ -149,7 +218,6 @@ open class ArcPhlegm : ArtilleryBulletType(), NecroBullet {
 
     override fun despawned(b: Bullet) {
         if (b.absorbed) { super.despawned(b); return }
-        // Only treat as a real landing when the shell has flown its full lifetime.
         val landed = b.time >= b.lifetime - 1.5f
         if (landed) {
             hit(b, b.x, b.y)
