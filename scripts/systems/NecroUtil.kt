@@ -35,7 +35,7 @@ object NecroUtil {
     }
 
     /** Iterate units in radius. Zero-allocation alternative to [unitsIn]. */
-    inline fun eachUnitIn(x: Float, y: Float, r: Float, cons: (GameUnit) -> Unit) {
+    inline fun eachUnitIn(x: Float, y: Float, r: Float, crossinline cons: (GameUnit) -> Unit) {
         val rSq = r * r
         Groups.unit.intersect(x - r, y - r, r * 2f, r * 2f, Cons<GameUnit> { u ->
             if (!u.dead) {
@@ -55,7 +55,7 @@ object NecroUtil {
     }
 
     /** Zero-allocation iteration over nearby buildings. */
-    inline fun eachBuildingIn(x: Float, y: Float, r: Float, cons: (Building) -> Unit) {
+    inline fun eachBuildingIn(x: Float, y: Float, r: Float, crossinline cons: (Building) -> Unit) {
         Units.nearbyBuildings(x, y, r, Cons<Building> { b ->
             if (b.isValid && Mathf.within(b.x, b.y, x, y, r + b.hitSize() * 0.5f)) cons(b)
         })

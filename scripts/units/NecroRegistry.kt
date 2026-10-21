@@ -79,8 +79,9 @@ object NecroRegistry {
                     if (funcList.none { it.fb === b }) funcList.add(FuncEntry(w, b))
                 }
 
+                val nb = b as? NecroBullet
                 if (b is DeathSpawnBullet || b is DeathBurstBullet) {
-                    if (deathList.none { it === b }) deathList.add(b)
+                    if (nb != null && deathList.none { it === nb }) deathList.add(nb)
                 }
 
                 if (b is ArcPhlegm && b.rootSeconds > 0f) {
