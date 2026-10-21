@@ -29,10 +29,12 @@ jobs:
           set +e
           gradle jar --stacktrace --no-daemon --console=plain 2>&1 | tee build.log
           RC=${PIPESTATUS[0]}
-          # Emit lines with e: / error: as GitHub annotations
-          grep -E '^e: |^error: |^\* Exception|FAILURE:|BUILD ' build.log | while IFS= read -r line; do
-            echo "::error::$line"
-          done
+          # Emit compiler errors as GitHub annotations (only if failed)
+          if [ $RC -ne 0 ]; then
+            grep -E '^e: |^error: |^\* Exception|FAILURE:' build.log | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+          fi
           exit $RC
 
       - name: List build outputs
