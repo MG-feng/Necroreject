@@ -25,25 +25,25 @@ jobs:
           gradle-version: 8.10.2
 
       - name: Build jar (desktop)
+        id: build
         run: |
           set +e
-          gradle jar --stacktrace --no-daemon 2>&1 | tee build.log
-          EXIT=${PIPESTATUS[0]}
-          echo "=== Last 200 lines of build log ==="
-          tail -200 build.log
-          exit $EXIT
+          gradle jar --stacktrace --no-daemon > build.log 2>&1
+          echo "exit=$?" >> build.log
+          tail -n +1 build.log
+          exit $(grep -oE 'exit=[0-9]+' build.log | tail -1 | cut -d= -f2)
 
-      - name: List build outputs
+      - name: Upload build log always
         if: always()
-        run: ls -la build/libs/ 2>&1 || echo "No libs yet"
-
-      - name: Upload build log on failure
-        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: build-log
           path: build.log
           if-no-files-found: ignore
+
+      - name: List build outputs
+        if: always()
+        run: ls -la build/libs/ 2>&1 || echo "No libs yet"
 
       - name: Upload mod jar artifact
         if: success()

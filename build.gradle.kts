@@ -1,95 +1,86 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+plugins {
+    kotlin("jvm") version "1.9.25"
+}
 
 version = "0.1.0-dev"
 
-buildscript{
-    repositories{
-        mavenCentral()
-    }
-}
-
 val mindustryVersion = "v160.7"
-val kotlinVersion = "2.0.21"
 val sdkRoot: String? = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 val isWindows = System.getProperty("os.name").lowercase().contains("windows")
 val modArtifactName = "necroreject"
 
-plugins{
-    kotlin("jvm") version kotlinVersion
+sourceSets {
+    main {
+        kotlin.srcDirs("scripts")
+        java.srcDirs("scripts")
+    }
 }
 
-sourceSets.main{
-    kotlin.srcDirs("scripts")
-    java.srcDirs("scripts")
-}
-
-repositories{
+repositories {
     mavenCentral()
 
-    ivy{
+    ivy {
         url = uri("https://github.com/")
-        patternLayout{
+        patternLayout {
             artifact(
-                when(mindustryVersion){
+                when (mindustryVersion) {
                     "latest" -> "/[organisation]/[module]/releases/[revision]/download/dependencies.jar"
                     "be" -> "/[organisation]/[module]/releases/download/master/[revision].jar"
                     else -> "/[organisation]/[module]/releases/download/[revision]/dependencies.jar"
                 }
             )
         }
-        metadataSources{ artifact() }
+        metadataSources { artifact() }
 
-        content{
-            if(mindustryVersion == "be"){
+        content {
+            if (mindustryVersion == "be") {
                 includeVersion("Anuken", "MindustryBuilds", "latest")
-            }else{
+            } else {
                 includeVersion("Anuken", "Mindustry", mindustryVersion)
             }
         }
     }
 }
 
-dependencies{
-    compileOnly(if(mindustryVersion == "be") "Anuken:MindustryBuilds:latest" else "Anuken:Mindustry:$mindustryVersion")
+dependencies {
+    compileOnly(if (mindustryVersion == "be") "Anuken:MindustryBuilds:latest" else "Anuken:Mindustry:$mindustryVersion")
 }
 
-tasks.withType<KotlinCompile>().configureEach{
-    compilerOptions{
-        jvmTarget.set(JvmTarget.JVM_1_8)
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
-tasks.withType<JavaCompile>().configureEach{
+tasks.withType<JavaCompile>().configureEach {
     sourceCompatibility = "1.8"
     targetCompatibility = "1.8"
-    options.release.set(8)
 }
 
-val jarAndroid = tasks.register("jarAndroid"){
-    dependsOn("jar")
+val jarAndroid = tasks.register("jarAndroid") {
+    dependsOn(tasks.jar)
 
-    doLast{
-        if (sdkRoot.isNullOrEmpty() || !File(sdkRoot).exists()){
+    doLast {
+        if (sdkRoot.isNullOrEmpty() || !File(sdkRoot).exists()) {
             throw GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
         }
 
         val platformRoot = File("$sdkRoot/platforms/").listFiles()
             ?.sorted()
             ?.reversed()
-            ?.find{ f -> File(f, "android.jar").exists() }
+            ?.find { f -> File(f, "android.jar").exists() }
             ?: throw GradleException("No android.jar found. Ensure that you have an Android platform installed.")
 
         val dependencies = (configurations.compileClasspath.get().toList() +
                 configurations.runtimeClasspath.get().toList() +
                 listOf(File(platformRoot, "android.jar")))
-            .joinToString(" "){ "--classpath ${it.path}" }
+            .joinToString(" ") { "--classpath ${it.path}" }
 
         val d8 = if (isWindows) "d8.bat" else "d8"
-
         val libsDir = "${layout.buildDirectory.get().asFile}/libs"
+
         val process = ProcessBuilder(
-            "$d8 $dependencies --min-api 21 --output $libsDir/${modArtifactName}Android.jar $libsDir/${modArtifactName}Desktop.jar".split(" "))
+            *"$d8 $dependencies --min-api 21 --output $libsDir/${modArtifactName}Android.jar $libsDir/${modArtifactName}Desktop.jar".split(" ").toTypedArray())
             .directory(File(libsDir))
             .redirectOutput(ProcessBuilder.Redirect.INHERIT)
             .redirectError(ProcessBuilder.Redirect.INHERIT)
@@ -133,7 +124,7 @@ tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-val deploy = tasks.register("deploy", Jar::class){
+val deploy = tasks.register("deploy", Jar::class) {
     dependsOn(jarAndroid)
     dependsOn(tasks.jar)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -147,7 +138,7 @@ val deploy = tasks.register("deploy", Jar::class){
         )
     })
 
-    doLast{
+    doLast {
         delete(
             "${layout.buildDirectory.get().asFile}/libs/${modArtifactName}Desktop.jar",
             "${layout.buildDirectory.get().asFile}/libs/${modArtifactName}Android.jar"
