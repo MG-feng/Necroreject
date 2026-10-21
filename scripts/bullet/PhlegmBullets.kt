@@ -1,5 +1,6 @@
 package com.manona.industry
 
+import arc.audio.Sound
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
@@ -10,7 +11,6 @@ import mindustry.content.Fx
 import mindustry.entities.bullet.ArtilleryBulletType
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.gen.Bullet
-import mindustry.gen.Sounds
 import mindustry.gen.Unit as GameUnit
 import mindustry.graphics.Layer
 import kotlin.math.max
@@ -135,7 +135,6 @@ open class ArcPhlegm : ArtilleryBulletType(), NecroBullet {
         despawnHit = false
         chargeEffect = NecroFx.charge
         trailColor = NecroFx.BRIGHT; lightColor = NecroFx.BRIGHT
-        shootSound = Sounds.artillery
     }
 
     override fun draw(b: Bullet) {
@@ -167,7 +166,7 @@ private fun inertInit(b: BasicBulletType) {
     b.shootEffect = Fx.none; b.hitEffect = Fx.none; b.despawnEffect = Fx.none
     b.smokeEffect = Fx.none; b.hittable = false; b.absorbable = false
     b.drawSize = 0f
-    b.shootSound = Sounds.none
+    b.shootSound = Sound()
 }
 
 class SecretionBullet : BasicBulletType(), FunctionBullet {
