@@ -25,19 +25,35 @@ jobs:
           gradle-version: 8.10.2
 
       - name: Build jar (desktop)
-        run: gradle jar --stacktrace --info
+        run: |
+          set +e
+          gradle jar --stacktrace --no-daemon 2>&1 | tee build.log
+          EXIT=${PIPESTATUS[0]}
+          echo "=== Last 200 lines of build log ==="
+          tail -200 build.log
+          exit $EXIT
 
       - name: List build outputs
-        run: ls -la build/libs/
+        if: always()
+        run: ls -la build/libs/ 2>&1 || echo "No libs yet"
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: ignore
 
       - name: Upload mod jar artifact
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: necroreject-desktop
           path: build/libs/necrorejectDesktop.jar
 
       - name: Create release (tagged pushes)
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: success() && startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: build/libs/necrorejectDesktop.jar
