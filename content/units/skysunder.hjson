@@ -1,0 +1,132 @@
+name: skysunder
+type: legs
+legCount: 8
+health: 18000
+armor: 250
+speed: 0.18
+rotateSpeed: 1.2
+hitSize: 38
+range: 400
+targetGround: true
+targetAir: false
+weapons: [
+    {
+        name: sky-shell
+        x: 0
+        y: 16
+        shootY: 24
+        top: true
+        rotate: false
+        mirror: false
+        reload: 360
+        recoil: 15
+        inaccuracy: 0
+        shoot: {
+            firstShotDelay: 120
+        }
+        bullet: {
+            type: com.manona.industry.ArcPhlegm
+            damage: 1
+            splashDamage: 4000
+            splashDamageRadius: 150
+            speed: 3.0
+            lifetime: 280
+            collidesAir: false
+            collidesGround: true
+            status: melting
+            statusDuration: 300
+            knockback: 10.0
+            hittable: true
+            hitSize: 20
+            visualRadius: 18
+            arcHeight: 50
+            trailLength: 60
+            trailWidth: 12
+            trailColor: 8cff59
+            lightColor: 8cff59
+            lightRadius: 60
+            puddleRadius: 40
+            puddleCount: 15
+            corrosionSeconds: 15
+            spawnType: necroflux
+            spawnMin: 1
+            spawnMax: 3
+            spawnRadius: 30
+            rootSeconds: 2.5
+            shootEffect: none
+            hitEffect: none
+            despawnEffect: none
+        }
+    }
+    {
+        name: sky-secretion
+        x: 0
+        y: -8
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 50
+        bullet: {
+            type: com.manona.industry.SecretionBullet
+            puddleRadius: 18
+            puddleCount: 3
+        }
+    }
+    {
+        name: sky-death-burst
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 1000000
+        bullet: {
+            type: com.manona.industry.DeathBurstBullet
+            burstRadius: 180
+            burstDamage: 600
+            burstCorrosionSeconds: 8
+            puddleRadius: 45
+            puddleCount: 20
+        }
+    }
+    {
+        name: sky-death-necroflux
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 1000000
+        bullet: {
+            type: com.manona.industry.DeathSpawnBullet
+            spawnType: necroflux
+            spawnMin: 2
+            spawnMax: 4
+            spawnRadius: 45
+        }
+    }
+    {
+        name: sky-death-corrocrust
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 1000000
+        bullet: {
+            type: com.manona.industry.DeathSpawnBullet
+            spawnType: corrocrust
+            spawnMin: 0
+            spawnMax: 1
+            spawnRadius: 50
+        }
+    }
+]

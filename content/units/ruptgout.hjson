@@ -1,0 +1,93 @@
+name: ruptgout
+type: legs
+legCount: 4
+health: 3500
+armor: 80
+speed: 0.6
+rotateSpeed: 2.5
+hitSize: 26
+range: 200
+targetGround: true
+targetAir: false
+weapons: [
+    {
+        name: rupt-lob
+        x: 0
+        y: 10
+        shootY: 14
+        top: true
+        rotate: false
+        mirror: false
+        reload: 120
+        recoil: 6
+        inaccuracy: 3
+        shootStatus: slow
+        shootStatusDuration: 120
+        shoot: {
+            firstShotDelay: 60
+        }
+        bullet: {
+            type: com.manona.industry.ArcPhlegm
+            damage: 1
+            splashDamage: 600
+            splashDamageRadius: 75
+            speed: 3.5
+            lifetime: 120
+            collidesAir: false
+            collidesGround: true
+            status: melting
+            statusDuration: 240
+            knockback: 4.0
+            hittable: true
+            hitSize: 14
+            visualRadius: 12
+            arcHeight: 30
+            trailLength: 50
+            trailWidth: 8
+            trailColor: 8cff59
+            lightColor: 8cff59
+            lightRadius: 40
+            puddleRadius: 22
+            puddleCount: 6
+            corrosionSeconds: 5
+            shootEffect: none
+            hitEffect: none
+            despawnEffect: none
+        }
+    }
+    {
+        name: rupt-secretion
+        x: 0
+        y: -5
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 40
+        bullet: {
+            type: com.manona.industry.SecretionBullet
+            puddleRadius: 14
+            puddleCount: 2
+        }
+    }
+    {
+        name: rupt-death
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 1000000
+        bullet: {
+            type: com.manona.industry.DeathBurstBullet
+            burstRadius: 110
+            burstDamage: 250
+            burstCorrosionSeconds: 5
+            puddleRadius: 25
+            puddleCount: 10
+        }
+    }
+]

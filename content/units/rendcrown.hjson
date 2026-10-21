@@ -1,0 +1,163 @@
+name: rendcrown
+type: mech
+health: 25000
+armor: 280
+speed: 0.25
+rotateSpeed: 1.0
+hitSize: 48
+range: 120
+targetGround: false
+targetAir: false
+weapons: [
+    {
+        name: rend-field
+        x: 0
+        y: 10
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 15
+        bullet: {
+            type: com.manona.industry.AuraBullet
+            auraRadius: 120
+            auraDamage: 140
+            auraHeal: 0
+            auraHealPercentPerSecond: 0.01
+            auraCorrosionSeconds: 6
+        }
+    }
+    {
+        name: rend-spray
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 40
+        bullet: {
+            type: com.manona.industry.SprayBullet
+            sprayMinRadius: 30
+            sprayMaxRadius: 130
+            sprayCount: 6
+            puddleRadius: 18
+            puddleCount: 2
+            corrosionSeconds: 3
+        }
+    }
+    {
+        name: rend-secretion
+        x: 0
+        y: -10
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 25
+        bullet: {
+            type: com.manona.industry.SecretionBullet
+            puddleRadius: 24
+            puddleCount: 4
+        }
+    }
+    {
+        name: rend-pustule
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 2400
+        bullet: {
+            type: com.manona.industry.PustuleBullet
+            burstRadius: 100
+            burstDamage: 80
+            burstCorrosionSeconds: 5
+            spawnType: corrocrust
+            spawnMin: 2
+            spawnMax: 3
+            spawnRadius: 40
+            puddleRadius: 16
+            puddleCount: 4
+        }
+    }
+    {
+        name: rend-death-burst
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 1000000
+        bullet: {
+            type: com.manona.industry.DeathBurstBullet
+            burstRadius: 260
+            burstDamage: 1200
+            burstCorrosionSeconds: 12
+            puddleRadius: 55
+            puddleCount: 30
+        }
+    }
+    {
+        name: rend-death-ruptgout
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 1000000
+        bullet: {
+            type: com.manona.industry.DeathSpawnBullet
+            spawnType: ruptgout
+            spawnMin: 0
+            spawnMax: 1
+            spawnRadius: 70
+        }
+    }
+    {
+        name: rend-death-corrocrust
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 1000000
+        bullet: {
+            type: com.manona.industry.DeathSpawnBullet
+            spawnType: corrocrust
+            spawnMin: 2
+            spawnMax: 5
+            spawnRadius: 60
+        }
+    }
+    {
+        name: rend-death-necroflux
+        x: 0
+        y: 0
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 1000000
+        bullet: {
+            type: com.manona.industry.DeathSpawnBullet
+            spawnType: necroflux
+            spawnMin: 5
+            spawnMax: 10
+            spawnRadius: 80
+        }
+    }
+]
