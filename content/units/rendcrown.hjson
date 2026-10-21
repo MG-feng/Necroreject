@@ -1,16 +1,17 @@
 name: rendcrown
 type: mech
-health: 25000
-armor: 280
-speed: 0.25
-rotateSpeed: 1.0
-hitSize: 48
+health: 22000
+armor: 240
+speed: 0.22
+rotateSpeed: 0.9
+hitSize: 50
 range: 120
 targetGround: false
 targetAir: false
 weapons: [
     {
         name: rend-field
+        description: @bullet.necroreject-rend-field.description
         x: 0
         y: 10
         top: true
@@ -21,15 +22,16 @@ weapons: [
         reload: 15
         bullet: {
             type: com.manona.industry.AuraBullet
-            auraRadius: 120
-            auraDamage: 140
+            auraRadius: 85
+            auraDamage: 80
             auraHeal: 0
-            auraHealPercentPerSecond: 0.01
-            auraCorrosionSeconds: 6
+            auraHealPercentPerSecond: 0.008
+            auraCorrosionSeconds: 4
         }
     }
     {
         name: rend-spray
+        description: @bullet.necroreject-rend-spray.description
         x: 0
         y: 0
         top: true
@@ -37,19 +39,20 @@ weapons: [
         mirror: false
         controllable: false
         autoTarget: false
-        reload: 40
+        reload: 45
         bullet: {
             type: com.manona.industry.SprayBullet
-            sprayMinRadius: 30
-            sprayMaxRadius: 130
-            sprayCount: 6
-            puddleRadius: 18
+            sprayMinRadius: 25
+            sprayMaxRadius: 95
+            sprayCount: 5
+            puddleRadius: 16
             puddleCount: 2
-            corrosionSeconds: 3
+            corrosionSeconds: 2.5
         }
     }
     {
         name: rend-secretion
+        description: @bullet.necroreject-rend-secretion.description
         x: 0
         y: -10
         top: true
@@ -57,15 +60,16 @@ weapons: [
         mirror: false
         controllable: false
         autoTarget: false
-        reload: 25
+        reload: 30
         bullet: {
             type: com.manona.industry.SecretionBullet
-            puddleRadius: 24
-            puddleCount: 4
+            puddleRadius: 18
+            puddleCount: 3
         }
     }
     {
         name: rend-pustule
+        description: @bullet.necroreject-rend-pustule.description
         x: 0
         y: 0
         top: true
@@ -73,22 +77,23 @@ weapons: [
         mirror: false
         controllable: false
         autoTarget: false
-        reload: 2400
+        reload: 300
         bullet: {
             type: com.manona.industry.PustuleBullet
-            burstRadius: 100
-            burstDamage: 80
-            burstCorrosionSeconds: 5
+            burstRadius: 80
+            burstDamage: 70
+            burstCorrosionSeconds: 4
             spawnType: corrocrust
-            spawnMin: 2
-            spawnMax: 3
-            spawnRadius: 40
-            puddleRadius: 16
-            puddleCount: 4
+            spawnMin: 1
+            spawnMax: 2
+            spawnRadius: 35
+            puddleRadius: 14
+            puddleCount: 3
         }
     }
     {
         name: rend-death-burst
+        description: @bullet.necroreject-rend-death-burst.description
         x: 0
         y: 0
         top: true
@@ -99,15 +104,16 @@ weapons: [
         reload: 1000000
         bullet: {
             type: com.manona.industry.DeathBurstBullet
-            burstRadius: 260
-            burstDamage: 1200
-            burstCorrosionSeconds: 12
-            puddleRadius: 55
-            puddleCount: 30
+            burstRadius: 180
+            burstDamage: 900
+            burstCorrosionSeconds: 8
+            puddleRadius: 35
+            puddleCount: 14
         }
     }
     {
         name: rend-death-ruptgout
+        description: @bullet.necroreject-rend-death-ruptgout.description
         x: 0
         y: 0
         top: true
@@ -121,11 +127,12 @@ weapons: [
             spawnType: ruptgout
             spawnMin: 0
             spawnMax: 1
-            spawnRadius: 70
+            spawnRadius: 60
         }
     }
     {
         name: rend-death-corrocrust
+        description: @bullet.necroreject-rend-death-corrocrust.description
         x: 0
         y: 0
         top: true
@@ -137,13 +144,14 @@ weapons: [
         bullet: {
             type: com.manona.industry.DeathSpawnBullet
             spawnType: corrocrust
-            spawnMin: 2
-            spawnMax: 5
-            spawnRadius: 60
+            spawnMin: 1
+            spawnMax: 3
+            spawnRadius: 50
         }
     }
     {
         name: rend-death-necroflux
+        description: @bullet.necroreject-rend-death-necroflux.description
         x: 0
         y: 0
         top: true
@@ -155,9 +163,9 @@ weapons: [
         bullet: {
             type: com.manona.industry.DeathSpawnBullet
             spawnType: necroflux
-            spawnMin: 5
-            spawnMax: 10
-            spawnRadius: 80
+            spawnMin: 4
+            spawnMax: 7
+            spawnRadius: 60
         }
     }
 ]

@@ -11,36 +11,37 @@ targetAir: false
 weapons: [
     {
         name: necro-spit
+        description: @bullet.necroreject-necro-spit.description
         x: 0
         y: 6
         shootY: 8
         top: true
         rotate: false
         mirror: false
-        reload: 18
+        reload: 22
         recoil: 1.5
-        inaccuracy: 3
+        inaccuracy: 4
         bullet: {
             type: com.manona.industry.PhlegmBullet
-            damage: 20
-            splashDamage: 30
-            splashDamageRadius: 25
+            damage: 18
+            splashDamage: 24
+            splashDamageRadius: 20
             speed: 6.5
-            lifetime: 50
+            lifetime: 25
             collidesAir: false
             collidesGround: true
             status: melting
             statusDuration: 120
-            knockback: 1.0
+            knockback: 0.8
             hittable: true
             hitSize: 5
             visualRadius: 5
-            trailLength: 30
-            trailWidth: 4
+            trailLength: 18
+            trailWidth: 3
             trailColor: 8cff59
             lightColor: 8cff59
             lightRadius: 20
-            puddleRadius: 8
+            puddleRadius: 7
             puddleCount: 2
             corrosionSeconds: 2
             shootEffect: none
@@ -50,6 +51,7 @@ weapons: [
     }
     {
         name: necro-secretion
+        description: @bullet.necroreject-necro-secretion.description
         x: 0
         y: -3
         top: true
@@ -57,11 +59,11 @@ weapons: [
         mirror: false
         controllable: false
         autoTarget: false
-        reload: 30
+        reload: 35
         bullet: {
             type: com.manona.industry.SecretionBullet
-            puddleRadius: 12
-            puddleCount: 2
+            puddleRadius: 10
+            puddleCount: 1
         }
     }
 ]

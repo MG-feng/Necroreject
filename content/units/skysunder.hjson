@@ -1,58 +1,56 @@
 name: skysunder
 type: legs
 legCount: 8
-health: 18000
-armor: 250
-speed: 0.18
-rotateSpeed: 1.2
-hitSize: 38
-range: 400
+health: 16000
+armor: 200
+speed: 0.2
+rotateSpeed: 1.4
+hitSize: 40
+range: 300
 targetGround: true
 targetAir: false
 weapons: [
     {
         name: sky-shell
+        description: @bullet.necroreject-sky-shell.description
         x: 0
-        y: 16
-        shootY: 24
+        y: 18
+        shootY: 26
         top: true
         rotate: false
         mirror: false
         reload: 360
-        recoil: 15
-        inaccuracy: 0
+        recoil: 12
+        inaccuracy: 2
+        shootStatus: slow
+        shootStatusDuration: 180
         shoot: {
             firstShotDelay: 120
         }
         bullet: {
             type: com.manona.industry.ArcPhlegm
             damage: 1
-            splashDamage: 4000
-            splashDamageRadius: 150
-            speed: 3.0
-            lifetime: 280
+            splashDamage: 1400
+            splashDamageRadius: 70
+            speed: 4.0
+            lifetime: 90
             collidesAir: false
             collidesGround: true
             status: melting
-            statusDuration: 300
-            knockback: 10.0
+            statusDuration: 240
+            knockback: 6.0
             hittable: true
-            hitSize: 20
-            visualRadius: 18
-            arcHeight: 50
-            trailLength: 60
-            trailWidth: 12
-            trailColor: 8cff59
-            lightColor: 8cff59
-            lightRadius: 60
-            puddleRadius: 40
-            puddleCount: 15
-            corrosionSeconds: 15
+            hitSize: 18
+            visualRadius: 16
+            arcHeight: 36
+            puddleRadius: 26
+            puddleCount: 8
+            corrosionSeconds: 8
             spawnType: necroflux
             spawnMin: 1
-            spawnMax: 3
-            spawnRadius: 30
-            rootSeconds: 2.5
+            spawnMax: 2
+            spawnRadius: 28
+            rootSeconds: 2.0
             shootEffect: none
             hitEffect: none
             despawnEffect: none
@@ -60,6 +58,7 @@ weapons: [
     }
     {
         name: sky-secretion
+        description: @bullet.necroreject-sky-secretion.description
         x: 0
         y: -8
         top: true
@@ -67,15 +66,16 @@ weapons: [
         mirror: false
         controllable: false
         autoTarget: false
-        reload: 50
+        reload: 55
         bullet: {
             type: com.manona.industry.SecretionBullet
-            puddleRadius: 18
-            puddleCount: 3
+            puddleRadius: 14
+            puddleCount: 2
         }
     }
     {
         name: sky-death-burst
+        description: @bullet.necroreject-sky-death-burst.description
         x: 0
         y: 0
         top: true
@@ -86,15 +86,16 @@ weapons: [
         reload: 1000000
         bullet: {
             type: com.manona.industry.DeathBurstBullet
-            burstRadius: 180
-            burstDamage: 600
-            burstCorrosionSeconds: 8
-            puddleRadius: 45
-            puddleCount: 20
+            burstRadius: 120
+            burstDamage: 500
+            burstCorrosionSeconds: 6
+            puddleRadius: 30
+            puddleCount: 10
         }
     }
     {
         name: sky-death-necroflux
+        description: @bullet.necroreject-sky-death-necroflux.description
         x: 0
         y: 0
         top: true
@@ -107,12 +108,13 @@ weapons: [
             type: com.manona.industry.DeathSpawnBullet
             spawnType: necroflux
             spawnMin: 2
-            spawnMax: 4
-            spawnRadius: 45
+            spawnMax: 3
+            spawnRadius: 40
         }
     }
     {
         name: sky-death-corrocrust
+        description: @bullet.necroreject-sky-death-corrocrust.description
         x: 0
         y: 0
         top: true
@@ -126,7 +128,7 @@ weapons: [
             spawnType: corrocrust
             spawnMin: 0
             spawnMax: 1
-            spawnRadius: 50
+            spawnRadius: 45
         }
     }
 ]

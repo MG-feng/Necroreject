@@ -1,9 +1,9 @@
 name: ruptgout
 type: legs
 legCount: 4
-health: 3500
-armor: 80
-speed: 0.6
+health: 3200
+armor: 70
+speed: 0.55
 rotateSpeed: 2.5
 hitSize: 26
 range: 200
@@ -12,15 +12,16 @@ targetAir: false
 weapons: [
     {
         name: rupt-lob
+        description: @bullet.necroreject-rupt-lob.description
         x: 0
         y: 10
         shootY: 14
         top: true
         rotate: false
         mirror: false
-        reload: 120
+        reload: 150
         recoil: 6
-        inaccuracy: 3
+        inaccuracy: 4
         shootStatus: slow
         shootStatusDuration: 120
         shoot: {
@@ -29,27 +30,23 @@ weapons: [
         bullet: {
             type: com.manona.industry.ArcPhlegm
             damage: 1
-            splashDamage: 600
-            splashDamageRadius: 75
+            splashDamage: 220
+            splashDamageRadius: 48
             speed: 3.5
-            lifetime: 120
+            lifetime: 80
             collidesAir: false
             collidesGround: true
             status: melting
-            statusDuration: 240
-            knockback: 4.0
+            statusDuration: 180
+            knockback: 3.0
             hittable: true
             hitSize: 14
-            visualRadius: 12
-            arcHeight: 30
-            trailLength: 50
-            trailWidth: 8
-            trailColor: 8cff59
-            lightColor: 8cff59
-            lightRadius: 40
-            puddleRadius: 22
-            puddleCount: 6
-            corrosionSeconds: 5
+            visualRadius: 11
+            arcHeight: 28
+            puddleRadius: 16
+            puddleCount: 4
+            corrosionSeconds: 4
+            spawnType: ""
             shootEffect: none
             hitEffect: none
             despawnEffect: none
@@ -57,6 +54,7 @@ weapons: [
     }
     {
         name: rupt-secretion
+        description: @bullet.necroreject-rupt-secretion.description
         x: 0
         y: -5
         top: true
@@ -64,15 +62,16 @@ weapons: [
         mirror: false
         controllable: false
         autoTarget: false
-        reload: 40
+        reload: 45
         bullet: {
             type: com.manona.industry.SecretionBullet
-            puddleRadius: 14
+            puddleRadius: 12
             puddleCount: 2
         }
     }
     {
         name: rupt-death
+        description: @bullet.necroreject-rupt-death.description
         x: 0
         y: 0
         top: true
@@ -83,11 +82,11 @@ weapons: [
         reload: 1000000
         bullet: {
             type: com.manona.industry.DeathBurstBullet
-            burstRadius: 110
-            burstDamage: 250
-            burstCorrosionSeconds: 5
-            puddleRadius: 25
-            puddleCount: 10
+            burstRadius: 80
+            burstDamage: 180
+            burstCorrosionSeconds: 4
+            puddleRadius: 18
+            puddleCount: 6
         }
     }
 ]
