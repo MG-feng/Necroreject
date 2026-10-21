@@ -1,0 +1,67 @@
+name: necroflux
+type: mech
+health: 450
+armor: 15
+speed: 0.95
+rotateSpeed: 5
+hitSize: 12
+range: 150
+targetGround: true
+targetAir: false
+weapons: [
+    {
+        name: necro-spit
+        x: 0
+        y: 6
+        shootY: 8
+        top: true
+        rotate: false
+        mirror: false
+        reload: 18
+        recoil: 1.5
+        inaccuracy: 3
+        bullet: {
+            type: com.manona.industry.PhlegmBullet
+            damage: 20
+            splashDamage: 30
+            splashDamageRadius: 25
+            speed: 6.5
+            lifetime: 50
+            collidesAir: false
+            collidesGround: true
+            status: melting
+            statusDuration: 120
+            knockback: 1.0
+            hittable: true
+            hitSize: 5
+            visualRadius: 5
+            trailLength: 30
+            trailWidth: 4
+            trailColor: 8cff59
+            lightColor: 8cff59
+            lightRadius: 20
+            puddleRadius: 8
+            puddleCount: 2
+            corrosionSeconds: 2
+            shootEffect: none
+            hitEffect: none
+            despawnEffect: none
+        }
+    }
+    {
+        name: necro-secretion
+        x: 0
+        y: -3
+        top: true
+        rotate: false
+        mirror: false
+        controllable: false
+        autoTarget: false
+        reload: 30
+        bullet: {
+            type: com.manona.industry.SecretionBullet
+            puddleRadius: 12
+            puddleCount: 2
+        }
+    }
+]

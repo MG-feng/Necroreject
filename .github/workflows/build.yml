@@ -1,0 +1,49 @@
+name: Build Mod
+
+on:
+  push:
+    branches: [ main, arena/a8432e17-necroreject ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.5
+
+      - name: Build jar (desktop)
+        run: |
+          set +e
+          gradle jar --stacktrace --no-daemon --console=plain 2>&1 | tee build.log
+          RC=${PIPESTATUS[0]}
+          # Emit compiler errors as GitHub annotations (only if failed)
+          if [ $RC -ne 0 ]; then
+            grep -E '^e: |^error: |^\* Exception|FAILURE:' build.log | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+          fi
+          exit $RC
+
+      - name: List build outputs
+        if: always()
+        run: ls -la build/libs/ 2>&1 || echo "No libs yet"
+
+      - name: Upload mod jar artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: necroreject-desktop
+          path: build/libs/necrorejectDesktop.jar
