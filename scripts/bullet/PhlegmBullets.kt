@@ -199,12 +199,13 @@ open class ArcPhlegm : ArtilleryBulletType(), NecroBullet {
         val hf = heightFrac(b, arcHeight)
 
         // Trail at lifted body position so the slime trail follows the arc.
-        val tw = trailWidthCore() * b.fout()
-        Draw.color(trailColor, b.fout())
-        trail(b).drawCap(tw)
+        val f = b.fout()
+        val tw = trailWidthCore() * f
+        Draw.color(trailColor, f)
+        trail(b).drawCap(b.x, by, tw)
 
         // Light centered on the flying blob.
-        Drawf.light(b.team.color, b.x, by, lightRadius, lightColor, 0.7f * b.fout())
+        Drawf.light(b.x, by, b.x, by, lightRadius, lightColor, 0.7f * f)
 
         drawPhlegm(b, visualRadius, by, hf)
         Draw.reset()
