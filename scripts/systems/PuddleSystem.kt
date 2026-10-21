@@ -22,16 +22,16 @@ class Puddle(val x: Float, val y: Float, val team: Team, val maxRadius: Float, v
 
     val radius: Float
         get() {
-            val grow = Mathf.clamp(age / 8f)
+            val grow = Mathf.clamp(age / 8f, 0f, 1f)
             if (age < shrinkStart) return maxRadius * grow
-            val t = Mathf.clamp((age - shrinkStart) / (life - shrinkStart))
+            val t = Mathf.clamp((age - shrinkStart) / (life - shrinkStart), 0f, 1f)
             return maxRadius * (1f - 0.4f * t)
         }
 
     private val alpha: Float
         get() {
             if (age < shrinkStart) return 1f
-            val t = Mathf.clamp((age - shrinkStart) / (life - shrinkStart))
+            val t = Mathf.clamp((age - shrinkStart) / (life - shrinkStart), 0f, 1f)
             val k = 1f - t
             return k * k
         }

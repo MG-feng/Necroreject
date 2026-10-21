@@ -66,7 +66,7 @@ val jarAndroid = tasks.register("jarAndroid") {
         }
 
         val platformRoot = File("$sdkRoot/platforms/").listFiles()
-            ?.sorted()
+            ?.sortedBy { it.name }
             ?.reversed()
             ?.find { f -> File(f, "android.jar").exists() }
             ?: throw GradleException("No android.jar found. Ensure that you have an Android platform installed.")

@@ -24,22 +24,8 @@ jobs:
         with:
           gradle-version: 8.5
 
-      - name: Gradle version and environment
-        run: |
-          gradle --version
-          java -version
-          echo "PWD=$PWD"
-          ls -la
-
       - name: Build jar (desktop)
-        run: |
-          set +e
-          gradle jar --stacktrace --no-daemon --console=plain > build.log 2>&1
-          RC=$?
-          echo "==== Build exited with $RC. Last 400 lines of build.log: ===="
-          tail -n 400 build.log
-          echo "==== End of log ===="
-          exit $RC
+        run: gradle jar --stacktrace --no-daemon --console=plain
 
       - name: List build outputs
         if: always()
