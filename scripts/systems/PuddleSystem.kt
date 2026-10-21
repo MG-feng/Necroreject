@@ -130,17 +130,28 @@ object PuddleSystem {
         Events.run(EventType.Trigger.update, Runnable {
             if (!Vars.net.client()) {
                 val dt = Time.delta
+                // Snapshot the size before iterating so that puddles spawned this frame
+                // (from onDeath splash, etc.) don't get ticked this frame — prevents
+                // double-aging and any re-entrant iteration weirdness.
+                val n = puddles.size
                 var i = 0
-                while (i < puddles.size) {
+                var processed = 0
+                while (processed < n && i < puddles.size) {
                     val p = puddles.get(i)
                     p.update(dt)
-                    if (p.age >= p.life) puddles.remove(i) else i++
+                    if (p.age >= p.life) {
+                        puddles.remove(i)
+                    } else {
+                        i++
+                    }
+                    processed++
                 }
                 while (puddles.size > MAX_PUDDLES) puddles.remove(0)
             }
         })
         Events.run(EventType.Trigger.draw, Runnable {
-            for (i in 0 until puddles.size) puddles.get(i).draw()
+            val n = puddles.size
+            for (i in 0 until n) puddles.get(i).draw()
         })
         Events.on(EventType.WorldLoadEvent::class.java, Cons<EventType.WorldLoadEvent> { clear() })
     }

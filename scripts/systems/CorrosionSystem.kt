@@ -59,18 +59,29 @@ object CorrosionSystem {
         if (map.isEmpty()) return
 
         val dt = Time.delta
-        val unitIt = map.entries.iterator()
 
-        while (unitIt.hasNext()) {
-            val unitEntry = unitIt.next()
-            val u = Groups.unit.getByID(unitEntry.key)
-            if (u == null || u.dead) { unitIt.remove(); continue }
+        // Snapshot the unit ids so that on-death side effects (map.remove via onDeath,
+        // splash kills that add/remove other entries, etc.) cannot CME the iterator.
+        val ids = map.keys.toIntArray()
 
-            val prot = NecroRegistry.isProtected(u.id)
+        // Damage buffer: collect (unit, damage) during the bookkeeping pass and apply
+        // after we're done mutating the map, so a kill during damage() can't reach back
+        // into this frame's map iteration.
+        val hits = ArrayList<Pair<GameUnit, Float>>(ids.size)
+
+        for (id in ids) {
+            val teams = map[id] ?: continue
+            val u = Groups.unit.getByID(id)
+            if (u == null || u.dead) {
+                map.remove(id)
+                continue
+            }
+
+            val prot = NecroRegistry.isProtected(id)
             var active = false
             var dotDmg = 0f
 
-            val teamIt = unitEntry.value.entries.iterator()
+            val teamIt = teams.entries.iterator()
             while (teamIt.hasNext()) {
                 val en = teamIt.next().value
                 en.ticks -= dt
@@ -86,10 +97,20 @@ object CorrosionSystem {
 
             if (active) {
                 u.apply(status, 2f)
-                if (dotDmg > 0f && !u.dead) u.damagePierce(dotDmg)
+                if (dotDmg > 0f && !u.dead) hits.add(u to dotDmg)
             } else {
-                unitIt.remove()
+                map.remove(id)
             }
+
+            // If all teams for this unit were cleaned up by the inner iterator,
+            // drop the outer entry too.
+            if (teams.isEmpty()) map.remove(id)
+        }
+
+        // Apply damage outside of map iteration. Kills/splash here can safely
+        // trigger onDeath and any recursive CorrosionSystem/PuddleSystem calls.
+        for ((u, dmg) in hits) {
+            if (!u.dead) u.damagePierce(dmg)
         }
     }
 
