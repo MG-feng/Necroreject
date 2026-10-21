@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -25,15 +27,37 @@ jobs:
           gradle-version: 8.5
 
       - name: Build jar (desktop)
-        run: gradle jar --stacktrace --no-daemon --console=plain
+        id: build
+        run: |
+          set +e
+          gradle jar --stacktrace --no-daemon --console=plain 2>&1 | tee build.log
+          echo "gradle_rc=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Echo errors (last 100 lines)
+        if: always()
+        run: tail -n 100 build.log
+
+      - name: Gist log on failure
+        if: failure() || steps.build.outputs.gradle_rc != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh gist create build.log --desc "Necroreject build log $(date)" --filename build.log > gist.txt
+          cat gist.txt
+          echo "GIST_URL=$(cat gist.txt)" >> "$GITHUB_OUTPUT"
 
       - name: List build outputs
         if: always()
         run: ls -la build/libs/ 2>&1 || echo "No libs yet"
 
       - name: Upload mod jar artifact
-        if: success()
+        if: steps.build.outputs.gradle_rc == '0'
         uses: actions/upload-artifact@v4
         with:
           name: necroreject-desktop
           path: build/libs/necrorejectDesktop.jar
+
+      - name: Fail the job if gradle failed
+        if: steps.build.outputs.gradle_rc != '0'
+        run: exit 1
