@@ -91,9 +91,7 @@ val jarAndroid = tasks.register("jarAndroid") {
 }
 
 tasks.jar {
-    archiveBaseName.set(modArtifactName)
-    archiveVersion.set("")
-    archiveClassifier.set("Desktop")
+    archiveFileName.set("${modArtifactName}Desktop.jar")
 
     from(sourceSets.main.get().output)
 
@@ -130,9 +128,7 @@ val deploy = tasks.register("deploy", Jar::class) {
     dependsOn(jarAndroid)
     dependsOn(tasks.jar)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    archiveBaseName.set(modArtifactName)
-    archiveVersion.set("")
-    archiveClassifier.set("")
+    archiveFileName.set("${modArtifactName}.jar")
 
     from({
         listOf(
