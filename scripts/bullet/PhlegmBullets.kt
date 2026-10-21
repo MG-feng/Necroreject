@@ -34,8 +34,8 @@ private val tmpColor = Color()
  */
 private fun drawPhlegm(b: Bullet, visualRadius: Float, by: Float, heightFrac: Float) {
     val fin = b.fin()
-    val pulse = 1f + Mathf.sin((b.id * 37 + Time.time * 9f).toDouble()).toFloat() * 0.1f
-    val grow = 1f + 0.25f * Mathf.sin((fin * 180f).toDouble()).toFloat()
+    val pulse = 1f + Mathf.sinDeg(Time.time * 9f + b.id * 37f) * 0.1f
+    val grow = 1f + 0.25f * Mathf.sinDeg(fin * 180f)
     val r = (visualRadius * pulse * grow).coerceAtLeast(1f)
 
     // Ground shadow: smaller + fainter the higher the shell is.
@@ -70,12 +70,12 @@ private fun drawPhlegm(b: Bullet, visualRadius: Float, by: Float, heightFrac: Fl
 
 private fun arcY(b: Bullet, arcHeight: Float): Float {
     if (arcHeight <= 0f) return b.y
-    return b.y + Mathf.sin((b.fin() * 180f).toDouble()).toFloat() * arcHeight
+    return b.y + Mathf.sinDeg(b.fin() * 180f) * arcHeight
 }
 
 private fun heightFrac(b: Bullet, arcHeight: Float): Float {
     if (arcHeight <= 0f) return 0f
-    return Mathf.sin((b.fin() * 180f).toDouble()).toFloat()
+    return Mathf.sinDeg(b.fin() * 180f)
 }
 
 private fun phlegmImpact(
@@ -203,7 +203,7 @@ open class ArcPhlegm : ArtilleryBulletType(), NecroBullet {
         trail(b).drawCap(trailWidthCore(), b.fout())
 
         // Light centered on the flying blob.
-        Drawf.light(b.x, by, lightRadius, lightColor, 0.7f * b.fout())
+        Drawf.light(b.team, b.x, by, lightRadius, lightColor, 0.7f * b.fout())
 
         drawPhlegm(b, visualRadius, by, hf)
         Draw.reset()
