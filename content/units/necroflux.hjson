@@ -11,7 +11,6 @@ targetAir: false
 weapons: [
     {
         name: necro-spit
-        description: @bullet.necroreject-necro-spit.description
         x: 0
         y: 6
         shootY: 8
@@ -51,7 +50,6 @@ weapons: [
     }
     {
         name: necro-secretion
-        description: @bullet.necroreject-necro-secretion.description
         x: 0
         y: -3
         top: true

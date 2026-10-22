@@ -12,7 +12,6 @@ targetAir: false
 weapons: [
     {
         name: rupt-lob
-        description: @bullet.necroreject-rupt-lob.description
         x: 0
         y: 10
         shootY: 14
@@ -54,7 +53,6 @@ weapons: [
     }
     {
         name: rupt-secretion
-        description: @bullet.necroreject-rupt-secretion.description
         x: 0
         y: -5
         top: true
@@ -71,7 +69,6 @@ weapons: [
     }
     {
         name: rupt-death
-        description: @bullet.necroreject-rupt-death.description
         x: 0
         y: 0
         top: true
