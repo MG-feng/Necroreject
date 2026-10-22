@@ -28,4 +28,4 @@ Requires JDK 17+.
 
 ## License
 
-GNU AGPLv3 — see [LICENSE](LICENSE).
+GNU GPLv3 — see [LICENSE](LICENSE).
