@@ -111,9 +111,10 @@ tasks.jar {
     from(projectDir) {
         include("mod.hjson")
         include("content/**")
-        include("sprites/**")
         include("bundles/**")
+        include("sprites/**")
         include("sounds/**")
+        include("scripts/**")
 
         exclude("**/.DS_Store")
         exclude("**/Thumbs.db")

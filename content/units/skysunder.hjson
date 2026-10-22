@@ -12,7 +12,6 @@ targetAir: false
 weapons: [
     {
         name: sky-shell
-        description: @bullet.necroreject-sky-shell.description
         x: 0
         y: 18
         shootY: 26
@@ -58,7 +57,6 @@ weapons: [
     }
     {
         name: sky-secretion
-        description: @bullet.necroreject-sky-secretion.description
         x: 0
         y: -8
         top: true
@@ -75,7 +73,6 @@ weapons: [
     }
     {
         name: sky-death-burst
-        description: @bullet.necroreject-sky-death-burst.description
         x: 0
         y: 0
         top: true
@@ -95,7 +92,6 @@ weapons: [
     }
     {
         name: sky-death-necroflux
-        description: @bullet.necroreject-sky-death-necroflux.description
         x: 0
         y: 0
         top: true
@@ -114,7 +110,6 @@ weapons: [
     }
     {
         name: sky-death-corrocrust
-        description: @bullet.necroreject-sky-death-corrocrust.description
         x: 0
         y: 0
         top: true
