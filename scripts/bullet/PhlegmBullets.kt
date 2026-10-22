@@ -12,9 +12,6 @@ import mindustry.entities.bullet.ArtilleryBulletType
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.gen.Bullet
 import mindustry.gen.Unit as GameUnit
-import mindustry.graphics.Drawf
-import mindustry.graphics.Layer
-import mindustry.graphics.Trail
 import kotlin.math.max
 import kotlin.math.min
 
@@ -26,56 +23,31 @@ interface FunctionBullet : NecroBullet {
 
 private val tmpColor = Color()
 
-/**
- * Draws a phlegm blob. For arc shots [by] is lifted above ground and a ground
- * shadow is drawn at (b.x, b.y) whose size/alpha scales with the fraction of
- * arc height remaining, so the shell looks like it actually travels in an arc
- * instead of floating above a sliding ground trail.
- */
-private fun drawPhlegm(b: Bullet, visualRadius: Float, by: Float, heightFrac: Float) {
+private fun drawPhlegm(b: Bullet, visualRadius: Float) {
     val fin = b.fin()
     val pulse = 1f + Mathf.sinDeg(Time.time * 9f + b.id * 37f) * 0.1f
     val grow = 1f + 0.25f * Mathf.sinDeg(fin * 180f)
     val r = (visualRadius * pulse * grow).coerceAtLeast(1f)
 
-    // Ground shadow: smaller + fainter the higher the shell is.
-    val shadowScale = 0.6f + 0.4f * (1f - heightFrac)
-    val shadowAlpha = 0.18f + 0.22f * (1f - heightFrac)
-    Draw.z(Layer.debris)
-    Draw.color(Color.black, shadowAlpha)
-    Fill.circle(b.x, b.y, r * 0.8f * shadowScale)
-
-    // Main blob body, drawn at bullet layer at the lifted Y.
-    Draw.z(Layer.bullet)
     Draw.color(NecroFx.BRIGHT, 0.22f)
-    Fill.circle(b.x, by, r * 1.7f)
+    Fill.circle(b.x, b.y, r * 1.7f)
 
     for (i in 0 until 6) {
         val t = i / 5f
         if (t < 0.5f) tmpColor.set(NecroFx.BRIGHT).lerp(NecroFx.MID, t * 2f)
         else tmpColor.set(NecroFx.MID).lerp(NecroFx.DARK, (t - 0.5f) * 2f)
         Draw.color(tmpColor)
-        Fill.circle(b.x, by, r * (1f - t * 0.85f))
+        Fill.circle(b.x, b.y, r * (1f - t * 0.85f))
     }
 
     Draw.color(NecroFx.BRIGHT)
     Lines.stroke(max(0.8f, r * 0.15f))
-    Lines.circle(b.x, by, r * 0.95f)
+    Lines.circle(b.x, b.y, r * 0.95f)
 
     Draw.color(Color.white, 0.5f)
-    Fill.circle(b.x - r * 0.3f, by + r * 0.3f, r * 0.18f)
+    Fill.circle(b.x - r * 0.3f, b.y + r * 0.3f, r * 0.18f)
 
     Draw.reset()
-}
-
-private fun arcY(b: Bullet, arcHeight: Float): Float {
-    if (arcHeight <= 0f) return b.y
-    return b.y + Mathf.sinDeg(b.fin() * 180f) * arcHeight
-}
-
-private fun heightFrac(b: Bullet, arcHeight: Float): Float {
-    if (arcHeight <= 0f) return 0f
-    return Mathf.sinDeg(b.fin() * 180f)
 }
 
 private fun phlegmImpact(
@@ -100,10 +72,6 @@ private fun phlegmImpact(
     }
 }
 
-/**
- * Base for straight-travel phlegm shots (Necroflux).
- * Draws the body at bullet Y (no lift) and a small soft puddle shadow beneath.
- */
 open class PhlegmBullet : BasicBulletType(), NecroBullet {
     @JvmField var visualRadius = 6f
     @JvmField var puddleRadius = 10f
@@ -122,9 +90,8 @@ open class PhlegmBullet : BasicBulletType(), NecroBullet {
     }
 
     override fun draw(b: Bullet) {
-        // Trail stays flat with the ground blob; body is drawn directly on top.
         super.draw(b)
-        drawPhlegm(b, visualRadius, b.y, 0f)
+        drawPhlegm(b, visualRadius)
     }
 
     override fun hit(b: Bullet, x: Float, y: Float) {
@@ -142,22 +109,8 @@ open class PhlegmBullet : BasicBulletType(), NecroBullet {
     }
 }
 
-/**
- * Arcing phlegm artillery (Ruptgout / Skysunder).
- *
- * The bullet moves in a straight line along the ground (its X/Y follow the
- * artillery trajectory that Arc already simulates via vertical velocity), but
- * because Arc's artillery bullet rendering doesn't draw an arc for a
- * homogenous blob, we manually:
- *  - keep an independent Trail in the bullet's data that records the *lifted*
- *    body position each frame, so the green trail follows the shell, not the
- *    ground;
- *  - draw a shrinking ground shadow so the eye reads the blob as climbing and
- *    falling instead of sliding.
- */
 open class ArcPhlegm : ArtilleryBulletType(), NecroBullet {
     @JvmField var visualRadius = 9f
-    @JvmField var arcHeight = 24f
     @JvmField var puddleRadius = 15f
     @JvmField var puddleCount = 5
     @JvmField var corrosionSeconds = 5f
@@ -172,44 +125,13 @@ open class ArcPhlegm : ArtilleryBulletType(), NecroBullet {
         despawnHit = false
         chargeEffect = NecroFx.charge
         trailColor = NecroFx.BRIGHT; lightColor = NecroFx.BRIGHT
-        // Don't let the parent draw a ground trail for us; we manage our own arc trail.
-        trailLength = 0
-        trailWidth = 0f
         drawSize = 400f
     }
 
-    /** Lazy-init an arc-following Trail on the bullet. */
-    private fun trail(b: Bullet): Trail {
-        var t = b.data as? Trail
-        if (t == null) {
-            t = Trail(18)
-            b.data = t
-        }
-        return t
-    }
-
-    override fun update(b: Bullet) {
-        super.update(b)
-        val by = arcY(b, arcHeight)
-        trail(b).update(b.x, by)
-    }
-
     override fun draw(b: Bullet) {
-        val by = arcY(b, arcHeight)
-        val hf = heightFrac(b, arcHeight)
-        val f = b.fout()
-        val tw = trailWidthCore() * f
-
-        // Draw the trail in the lifted arc space so it follows the shell
-        // rather than sliding along the ground.
-        Draw.color(trailColor, f)
-        trail(b).drawCap(trailColor, tw)
-
-        drawPhlegm(b, visualRadius, by, hf)
-        Draw.reset()
+        super.draw(b)
+        drawPhlegm(b, visualRadius)
     }
-
-    private fun trailWidthCore(): Float = max(2f, visualRadius * 0.55f)
 
     override fun hit(b: Bullet, x: Float, y: Float) {
         super.hit(b, x, y)

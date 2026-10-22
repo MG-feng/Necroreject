@@ -6,7 +6,7 @@ armor: 200
 speed: 0.2
 rotateSpeed: 1.4
 hitSize: 40
-range: 300
+range: 100
 targetGround: true
 targetAir: false
 weapons: [
@@ -32,7 +32,7 @@ weapons: [
             splashDamage: 1400
             splashDamageRadius: 70
             speed: 4.0
-            lifetime: 90
+            lifetime: 30
             collidesAir: false
             collidesGround: true
             status: melting
